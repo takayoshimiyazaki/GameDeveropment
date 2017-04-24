@@ -5,7 +5,8 @@
 #pragma once
 
 #include "StepTimer.h"
-
+#include <SpriteFont.h>
+#include <SpriteBatch.h>
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -59,6 +60,11 @@ private:
     Microsoft::WRL::ComPtr<IDXGISwapChain1>         m_swapChain1;
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView>  m_renderTargetView;
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView>  m_depthStencilView;
+
+	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
+	std::unique_ptr<DirectX::SpriteFont> m_spriteFont;
+	std::wstring m_str;
+	int m_count;
 
     // Rendering loop timer.
     DX::StepTimer                                   m_timer;
