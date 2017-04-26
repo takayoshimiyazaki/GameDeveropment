@@ -7,6 +7,7 @@
 #include "StepTimer.h"
 #include <SpriteFont.h>
 #include <SpriteBatch.h>
+#include <SimpleMath.h>
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -68,4 +69,8 @@ private:
 
     // Rendering loop timer.
     DX::StepTimer                                   m_timer;
+
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
+	DirectX::SimpleMath::Vector2 m_screenPos;		// スプライト表示の座標
+	DirectX::SimpleMath::Vector2 m_origin;			// スプライトの原点
 };

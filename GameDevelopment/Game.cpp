@@ -5,6 +5,9 @@
 #include "pch.h"
 #include "Game.h"
 #include <sstream>
+#include <WICTextureLoader.h>
+#include <DDSTextureLoader.h>
+#include <CommonStates.h>
 
 extern void ExitGame();
 
@@ -42,6 +45,32 @@ void Game::Initialize(HWND window, int width, int height)
 	m_spriteFont = std::make_unique<SpriteFont>(m_d3dDevice.Get(), L"Resources/myfile.spritefont");
 
 	m_count = 0;
+
+	
+	ComPtr<ID3D11Resource> resource;
+	DX::ThrowIfFailed(
+		CreateWICTextureFromFile(m_d3dDevice.Get(), L"Resources/cat.png",
+			resource.GetAddressOf(),
+			m_texture.ReleaseAndGetAddressOf()));
+	/*DX::ThrowIfFailed(
+		CreateDDSTextureFromFile(m_d3dDevice.Get(), L"Resources/cat.dds",
+			resource.GetAddressOf(),
+			m_texture.ReleaseAndGetAddressOf()));*/
+	// 猫のテクスチャ
+	ComPtr<ID3D11Texture2D> cat;
+	DX::ThrowIfFailed(resource.As(&cat));
+
+	// テクスチャのの設定
+	CD3D11_TEXTURE2D_DESC catDesc;
+	cat->GetDesc(&catDesc);
+
+	// テクスチャの原点をテクスチャの中心にする
+	m_origin.x = float(catDesc.Width / 2);
+	m_origin.y = float(catDesc.Height / 2);
+
+	// 表示座標を画面中心に設定
+	m_screenPos.x = m_outputWidth / 2.f;
+	m_screenPos.y = m_outputHeight / 2.f;
 }
 
 // Executes the basic game loop.
@@ -85,8 +114,23 @@ void Game::Render()
     Clear();
 
     // TODO: Add your rendering code here.
-	m_spriteBatch->Begin();
+	CommonStates states(m_d3dDevice.Get());
+	m_spriteBatch->Begin(SpriteSortMode_Deferred, states.NonPremultiplied());
+
+	// テクスチャの切り取り
+	RECT rect;
+
+	rect.left = 30;
+	rect.right = 70;
+	rect.top = 30;
+	rect.bottom = 70;
+
+	// スプライトの描画
+	m_spriteBatch->Draw(m_texture.Get(), m_screenPos, nullptr, Colors::White,
+		XMConvertToRadians(90.0), m_origin);	
+
 	m_spriteFont->DrawString(m_spriteBatch.get(), m_str.c_str(), XMFLOAT2(100, 100));
+
 	m_spriteBatch->End();
     Present();
 }
