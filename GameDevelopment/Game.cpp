@@ -12,7 +12,6 @@
 extern void ExitGame();
 
 using namespace DirectX;
-
 using Microsoft::WRL::ComPtr;
 
 Game::Game() :
@@ -71,6 +70,9 @@ void Game::Initialize(HWND window, int width, int height)
 	// 表示座標を画面中心に設定
 	m_screenPos.x = m_outputWidth / 2.f;
 	m_screenPos.y = m_outputHeight / 2.f;
+
+	// キーボードのオブジェクトの生成
+	m_keyboard = std::make_unique<Keyboard>();
 }
 
 // Executes the basic game loop.
@@ -97,9 +99,61 @@ void Game::Update(DX::StepTimer const& timer)
 	//m_str = L"aaaaaa";
 	std::wstringstream ss;
 
-	ss << L"aiueo";
+	ss << L"Please Push";
 
 	m_str = ss.str();
+
+	// キーボードの情報を取得
+	auto kb = m_keyboard->GetState();
+
+	m_keytracker.Update(kb);
+
+	if (m_keytracker.pressed.Space)
+	{
+		// Space was just pressed down
+		m_str = L"SpacePush";
+	}
+	if (m_keytracker.IsKeyReleased(Keyboard::Space))
+	{
+		// F1 key was just released
+		m_str = L"Released";
+	}
+	if (m_keytracker.IsKeyReleased(Keyboard::Back))
+	{
+		// F1 key was just released
+		m_str = L"Released";
+	}
+	
+	if (kb.Back)
+	{
+		// Backspace key is down
+		m_str = L"BackSpace";
+	}
+	if (kb.W)
+	{
+		// W key is down
+	}
+	if (kb.A)
+	{
+		// A key is down
+	}
+	if (kb.S)
+	{
+		// S key is down
+	}
+	if (kb.D)
+	{
+		// D key is down
+	}
+	if (kb.LeftShift)
+	{
+		// Left shift key is down
+	}
+	if (kb.RightShift)
+	{
+		// Right shift key is down
+	}
+
 }
 
 // Draws the scene.
