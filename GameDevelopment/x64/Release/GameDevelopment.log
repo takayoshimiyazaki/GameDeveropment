@@ -1,0 +1,8 @@
+﻿  Assets\cat.png
+  pch.cpp
+  ADX2Le.cpp
+ADX2Le.cpp(375): fatal error C1010: プリコンパイル ヘッダーを検索中に不明な EOF が見つかりました。'#include "pch.h"' をソースに追加しましたか?
+  Game.cpp
+c:\users\s162176\documents\visual studio 2015\projects\gamedevelopment\gamedevelopment\Game.h(8): fatal error C1083: include ファイルを開けません。'SpriteFont.h':No such file or directory
+  Main.cpp
+c:\users\s162176\documents\visual studio 2015\projects\gamedevelopment\gamedevelopment\Game.h(8): fatal error C1083: include ファイルを開けません。'SpriteFont.h':No such file or directory

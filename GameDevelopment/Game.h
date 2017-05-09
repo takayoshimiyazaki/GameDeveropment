@@ -9,6 +9,10 @@
 #include <SpriteBatch.h>
 #include <SimpleMath.h>
 #include <Keyboard.h>
+#include <Mouse.h>
+#include "ADX2Le.h"
+#include "Resources\Music\Basic.h"
+#include "Resources\Music\Aikatsu_ChangeScene.h"
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -17,6 +21,7 @@ class Game
 public:
 
     Game();
+	virtual ~Game();
 
     // Initialization and management
     void Initialize(HWND window, int width, int height);
@@ -79,4 +84,8 @@ private:
 	std::unique_ptr<DirectX::Keyboard> m_keyboard;
 	// キーボードトラッカー
 	DirectX::Keyboard::KeyboardStateTracker m_keytracker;
+
+	// マウス
+	std::unique_ptr<DirectX::Mouse> m_mouse;
+	DirectX::Mouse::ButtonStateTracker m_tracker;
 };

@@ -1,9 +1,5 @@
 ﻿  Assets\cat.png
+  ADX2Le.cpp
+ADX2Le.cpp(375): fatal error C1010: プリコンパイル ヘッダーを検索中に不明な EOF が見つかりました。'#include "pch.h"' をソースに追加しましたか?
   Game.cpp
   Main.cpp
-     ライブラリ C:\Users\s162176\Documents\Visual Studio 2015\Projects\GameDevelopment\Release\GameDevelopment.lib とオブジェクト C:\Users\s162176\Documents\Visual Studio 2015\Projects\GameDevelopment\Release\GameDevelopment.exp を作成中
-  コード生成しています。
-  All 674 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  コード生成が終了しました。
-  GameDevelopment.vcxproj -> C:\Users\s162176\Documents\Visual Studio 2015\Projects\GameDevelopment\Release\GameDevelopment.exe
-  GameDevelopment.vcxproj -> C:\Users\s162176\Documents\Visual Studio 2015\Projects\GameDevelopment\Release\GameDevelopment.pdb (Full PDB)

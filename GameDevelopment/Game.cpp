@@ -22,6 +22,12 @@ Game::Game() :
 {
 }
 
+Game::~Game()
+{
+	// サウンド処理の破棄
+	ADX2Le::Finalize();
+}
+
 // Initialize the Direct3D resources required to run.
 void Game::Initialize(HWND window, int width, int height)
 {
@@ -73,6 +79,17 @@ void Game::Initialize(HWND window, int width, int height)
 
 	// キーボードのオブジェクトの生成
 	m_keyboard = std::make_unique<Keyboard>();
+
+	// マウスのオブジェクトの生成
+	m_mouse = std::make_unique<Mouse>();
+	m_mouse->SetWindow(window);
+
+	// acfファイルの読み込み
+	//ADX2Le::Initialize("Resources/Music/ADX2_samples.acf");
+	ADX2Le::Initialize("Resources/Music/Aikatsu_ChangeScene.acf");
+	// ACB,AWBファイルの読み込み
+	ADX2Le::LoadAcb("Resources/Music/Aikatsu_ChangeScene.acb", "Resources/Music/Aikatsu_ChangeScene.awb");
+	ADX2Le::Play(CRI_AIKATSU_CHANGESCENE__CUE_ID_1);
 }
 
 // Executes the basic game loop.
@@ -93,6 +110,9 @@ void Game::Update(DX::StepTimer const& timer)
 
     // TODO: Add your game logic here.
     elapsedTime;
+
+	// サウンドライブラリの毎更新
+	ADX2Le::Update();
 
 	m_count++;
 
@@ -154,6 +174,63 @@ void Game::Update(DX::StepTimer const& timer)
 		// Right shift key is down
 	}
 
+	// マウスの状態を取得
+	Mouse::State state = m_mouse->GetState();
+	m_tracker.Update(state);
+
+	if (state.leftButton)
+	{
+		// Left button is down
+		m_str = L"Mouse LeftButton";
+	}
+	if (state.rightButton)
+	{
+		// Right button is down
+		//m_str = L"Mouse RightButton";
+	}
+	if (state.middleButton)
+	{
+		// Middle button is down
+		m_str = L"Mouse MiddleButton";
+	}
+
+	SimpleMath::Vector2::XMFLOAT2 mousePosInPixels(float(state.x), float(state.y));
+	// This is the absolute position of the mouse relative
+	// to the upper-left corner of the window
+	// スプライトを動かす
+	m_screenPos = mousePosInPixels;
+
+	if (m_tracker.rightButton == Mouse::ButtonStateTracker::PRESSED)
+	{
+		// Take an action when Right mouse button is first pressed,
+		// but don't do it again until the button is released and
+		// then pressed again
+		m_str = L"Triger";
+	}
+	if (m_tracker.rightButton == Mouse::ButtonStateTracker::RELEASED)
+	{
+		// Take an action when Right mouse button is first pressed,
+		// but don't do it again until the button is released and
+		// then pressed again
+	}
+	
+	if (state.positionMode == Mouse::MODE_RELATIVE)
+	{
+		// state.x and state.y are relative values; system cursor is not visible
+	}
+	else
+	{
+		// state.x and state.y are absolute pixel values; system cursor is visible
+	}
+
+	/*if (m_tracker.leftButton == Mouse::ButtonStateTracker::ButtonState::PRESSED)
+	{
+		m_mouse->SetMode(Mouse::MODE_RELATIVE);
+	}
+	else if (m_tracker.leftButton == Mouse::ButtonStateTracker::ButtonState::RELEASED)
+	{
+		m_mouse->SetMode(Mouse::MODE_ABSOLUTE);
+	}*/
 }
 
 // Draws the scene.
