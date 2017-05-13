@@ -54,24 +54,38 @@ void Game::Initialize(HWND window, int width, int height)
 	
 	ComPtr<ID3D11Resource> resource;
 	DX::ThrowIfFailed(
-		CreateWICTextureFromFile(m_d3dDevice.Get(), L"Resources/cat.png",
+		CreateWICTextureFromFile(m_d3dDevice.Get(), L"Resources/Attack.jpg",
 			resource.GetAddressOf(),
-			m_texture.ReleaseAndGetAddressOf()));
+			m_attackTexture.ReleaseAndGetAddressOf()));
+	DX::ThrowIfFailed(
+		CreateWICTextureFromFile(m_d3dDevice.Get(), L"Resources/Guard.jpg",
+			resource.GetAddressOf(),
+			m_guardTexture.ReleaseAndGetAddressOf()));
 	/*DX::ThrowIfFailed(
 		CreateDDSTextureFromFile(m_d3dDevice.Get(), L"Resources/cat.dds",
 			resource.GetAddressOf(),
 			m_texture.ReleaseAndGetAddressOf()));*/
 	// 猫のテクスチャ
-	ComPtr<ID3D11Texture2D> cat;
-	DX::ThrowIfFailed(resource.As(&cat));
+	/*ComPtr<ID3D11Texture2D> cat;
+	DX::ThrowIfFailed(resource.As(&cat));*/
+	// 攻撃のテクスチャ
+	ComPtr<ID3D11Texture2D> attack;
+	DX::ThrowIfFailed(resource.As(&attack));
+	// 防御のテクスチャ
+	ComPtr<ID3D11Texture2D> guard;
+	DX::ThrowIfFailed(resource.As(&guard));
 
-	// テクスチャのの設定
-	CD3D11_TEXTURE2D_DESC catDesc;
-	cat->GetDesc(&catDesc);
+	// テクスチャの設定
+	CD3D11_TEXTURE2D_DESC attackDesc;
+	attack->GetDesc(&attackDesc);
+	CD3D11_TEXTURE2D_DESC guardDesc;
+	guard->GetDesc(&guardDesc);
 
 	// テクスチャの原点をテクスチャの中心にする
-	m_origin.x = float(catDesc.Width / 2);
-	m_origin.y = float(catDesc.Height / 2);
+	m_origin.x = float(attackDesc.Width / 2);
+	m_origin.y = float(attackDesc.Height / 2);
+	m_origin.x = float(guardDesc.Width / 2);
+	m_origin.y = float(guardDesc.Height / 2);
 
 	// 表示座標を画面中心に設定
 	m_screenPos.x = m_outputWidth / 2.f;
@@ -90,6 +104,13 @@ void Game::Initialize(HWND window, int width, int height)
 	// ACB,AWBファイルの読み込み
 	ADX2Le::LoadAcb("Resources/Music/Aikatsu_ChangeScene.acb", "Resources/Music/Aikatsu_ChangeScene.awb");
 	ADX2Le::Play(CRI_AIKATSU_CHANGESCENE__CUE_ID_1);
+
+	// ゲームパッドの生成
+	m_gamePad = std::make_unique<GamePad>();
+
+	m_attack = false;
+	m_guard = false;
+	m_mode = false;
 }
 
 // Executes the basic game loop.
@@ -198,7 +219,7 @@ void Game::Update(DX::StepTimer const& timer)
 	// This is the absolute position of the mouse relative
 	// to the upper-left corner of the window
 	// スプライトを動かす
-	m_screenPos = mousePosInPixels;
+	//m_screenPos = mousePosInPixels;
 
 	if (m_tracker.rightButton == Mouse::ButtonStateTracker::PRESSED)
 	{
@@ -231,6 +252,94 @@ void Game::Update(DX::StepTimer const& timer)
 	{
 		m_mouse->SetMode(Mouse::MODE_ABSOLUTE);
 	}*/
+
+	// ゲームパッドの状態取得
+	DirectX::GamePad::State padState = m_gamePad->GetState(0, GamePad::DEAD_ZONE_CIRCULAR);
+
+	if (padState.IsConnected())
+	{
+		if (padState.IsAPressed())
+		{
+			// Do action for button A being down
+		}
+		if (padState.buttons.y)
+		{
+			// Do action for button Y being down
+		}
+		if (padState.buttons.a)
+		{
+			// Do action for button A being down
+			m_gamePad->SetVibration(0, 1.0f, 1.0f);
+			if (m_mode)
+			{
+				m_guard = true;
+			}
+			else
+			{
+				m_attack = true;
+			}
+		}		
+		else if (padState.buttons.b)
+		{
+			// Do action for button B being down
+			if (m_mode)
+			{
+				m_attack = true;
+			}
+			else
+			{
+				m_guard = true;
+			}
+		}
+		else
+		{
+			m_attack = false;
+			m_guard = false;
+		}
+		
+		if (padState.IsDPadLeftPressed())
+		{
+			// Do action for DPAD Left being down
+		}
+		// 方向キー
+		if (padState.dpad.up || padState.dpad.down || padState.dpad.left || padState.dpad.right)
+		{
+			// Do action based on any DPAD change
+		}
+		// 左スティック左右
+		float posx = padState.thumbSticks.leftX;
+		// 左スティック上下
+		float posy = padState.thumbSticks.leftY;
+		// These values are normalized to -1 to 1
+
+		float throttle = padState.triggers.right;
+		// This value is normalized 0 -> 1
+
+		// 振動の調整
+		//m_gamePad->SetVibration(0, 1.0f, 1.0f);
+
+		if (padState.IsLeftTriggerPressed())
+		{
+			// Do action based on a left trigger pressed more than halfway
+		}
+		if (padState.IsBackPressed())
+		{
+			// Do action based on a Back pressed more than halfway
+			if (m_mode)
+			{
+				m_mode = false;
+			}
+			else
+			{
+				m_mode = true;
+			}
+		}
+		if (padState.IsViewPressed())
+		{	
+			// This is an alias for the Xbox 360 'Back' button
+			// which is called 'View' on the Xbox One controller. 
+		}
+	}
 }
 
 // Draws the scene.
@@ -249,18 +358,26 @@ void Game::Render()
 	m_spriteBatch->Begin(SpriteSortMode_Deferred, states.NonPremultiplied());
 
 	// テクスチャの切り取り
-	RECT rect;
+	//RECT rect;
 
-	rect.left = 30;
+	/*rect.left = 30;
 	rect.right = 70;
 	rect.top = 30;
-	rect.bottom = 70;
+	rect.bottom = 70;*/
 
 	// スプライトの描画
-	m_spriteBatch->Draw(m_texture.Get(), m_screenPos, nullptr, Colors::White,
-		XMConvertToRadians(90.0), m_origin);	
+	if (m_attack)
+	{
+		m_spriteBatch->Draw(m_attackTexture.Get(), m_screenPos, nullptr, Colors::White,
+			XMConvertToRadians(0.0), m_origin);
+	}
+	if (m_guard)
+	{
+		m_spriteBatch->Draw(m_guardTexture.Get(), m_screenPos, nullptr, Colors::White,
+			XMConvertToRadians(0.0), m_origin);
+	}
 
-	m_spriteFont->DrawString(m_spriteBatch.get(), m_str.c_str(), XMFLOAT2(100, 100));
+	//m_spriteFont->DrawString(m_spriteBatch.get(), m_str.c_str(), XMFLOAT2(100, 100));
 
 	m_spriteBatch->End();
     Present();

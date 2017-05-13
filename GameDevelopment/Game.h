@@ -10,6 +10,7 @@
 #include <SimpleMath.h>
 #include <Keyboard.h>
 #include <Mouse.h>
+#include <GamePad.h>
 #include "ADX2Le.h"
 #include "Resources\Music\Basic.h"
 #include "Resources\Music\Aikatsu_ChangeScene.h"
@@ -76,7 +77,8 @@ private:
     // Rendering loop timer.
     DX::StepTimer                                   m_timer;
 
-	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_texture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_attackTexture;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_guardTexture;
 	DirectX::SimpleMath::Vector2 m_screenPos;		// スプライト表示の座標
 	DirectX::SimpleMath::Vector2 m_origin;			// スプライトの原点
 
@@ -88,4 +90,11 @@ private:
 	// マウス
 	std::unique_ptr<DirectX::Mouse> m_mouse;
 	DirectX::Mouse::ButtonStateTracker m_tracker;
+
+	// ゲームパッド
+	std::unique_ptr<DirectX::GamePad> m_gamePad;
+
+	bool m_attack;
+	bool m_guard;
+	bool m_mode;
 };
