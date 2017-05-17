@@ -1,10 +1,4 @@
 ﻿  Assets\cat.png
-  ADX2Le.cpp
-  Game.cpp
-  Main.cpp
      ライブラリ C:\Users\s162176\Documents\Visual Studio 2015\Projects\GameDevelopment\Release\GameDevelopment.lib とオブジェクト C:\Users\s162176\Documents\Visual Studio 2015\Projects\GameDevelopment\Release\GameDevelopment.exp を作成中
-  コード生成しています。
-  All 736 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  コード生成が終了しました。
-  GameDevelopment.vcxproj -> C:\Users\s162176\Documents\Visual Studio 2015\Projects\GameDevelopment\Release\GameDevelopment.exe
-  GameDevelopment.vcxproj -> C:\Users\s162176\Documents\Visual Studio 2015\Projects\GameDevelopment\Release\GameDevelopment.pdb (Full PDB)
+JoyPad.obj : error LNK2001: 外部シンボル "_DirectInput8Create@20" は未解決です。
+C:\Users\s162176\Documents\Visual Studio 2015\Projects\GameDevelopment\Release\GameDevelopment.exe : fatal error LNK1120: 1 件の未解決の外部参照

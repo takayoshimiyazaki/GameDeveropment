@@ -108,6 +108,9 @@ void Game::Initialize(HWND window, int width, int height)
 	// ゲームパッドの生成
 	m_gamePad = std::make_unique<GamePad>();
 
+	m_pJouyPad = std::make_unique<JoyPad>();
+	m_pJouyPad->Initialize(window);
+
 	m_attack = false;
 	m_guard = false;
 	m_mode = false;

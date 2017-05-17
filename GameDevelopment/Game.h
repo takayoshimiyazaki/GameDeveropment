@@ -14,6 +14,7 @@
 #include "ADX2Le.h"
 #include "Resources\Music\Basic.h"
 #include "Resources\Music\Aikatsu_ChangeScene.h"
+#include "JoyPad.h"
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -93,6 +94,7 @@ private:
 
 	// ゲームパッド
 	std::unique_ptr<DirectX::GamePad> m_gamePad;
+	std::unique_ptr<JoyPad> m_pJouyPad;
 
 	bool m_attack;
 	bool m_guard;
