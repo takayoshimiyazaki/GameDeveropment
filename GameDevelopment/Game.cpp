@@ -138,6 +138,10 @@ void Game::Update(DX::StepTimer const& timer)
 	// サウンドライブラリの毎更新
 	ADX2Le::Update();
 
+	m_pJouyPad->Update();
+
+	//m_pJouyPad->getStickLRX(0);
+
 	m_count++;
 
 	//m_str = L"aaaaaa";
